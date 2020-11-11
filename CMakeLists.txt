@@ -279,6 +279,33 @@ IF (USE_OPENMP OR USE_CUDA)
 ENDIF ()
 
 
+find_package(DynamoRIO)
+if (NOT DynamoRIO_FOUND)
+  message(FATAL_ERROR "DynamoRIO package required to build")
+else ()
+  message("Found DynamoRIO")
+endif ()
+
+file(GLOB spatter_src
+	"src/*.h"
+	"src/*.c"
+	"src/openmp/*"
+	"include/*"
+)
+file(GLOB_RECURSE exter
+	"external/argtable3/src/*.c"
+	"external/argtable3/src/*.h"
+)
+#message("included: ${spatter_src}")
+#add_executable(spatterapp ${spatter_src} ${exter})
+#target_link_libraries(spatterapp m)
+#set_target_properties(spatterapp PROPERTIES RUNTIME_OUTPUT_DIRECTORY /nethome/vhuang31/spatter/external)
+#get_target_property(target_loc spatterapp RUNTIME_OUTPUT_DIRECTORY)
+#message("RUNTIME_OUTPUT_DIRECTORY of spatterapp from spatter CMake file: ${target_loc}")
+#configure_DynamoRIO_standalone(spatterapp)
+set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY /nethome/vhuang31/spatter/external)
+set_target_properties(spatter PROPERTIES LIBRARY_OUTPUT_DIRECTORY /nethome/vhuang31/spatter/external)
+configure_DynamoRIO_standalone(spatter)
 # Note - This file can be reformatted with cmake-format CMakeLists.txt -i
 # --command-case=upper --keyword-case=upper --dangle-parens --tab-size=4
 # --separate-ctrl-name-with-space --separate-fn-name-with-space If you do not

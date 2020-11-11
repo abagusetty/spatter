@@ -14,6 +14,7 @@
 #include "sp_alloc.h"
 #include "morton.h"
 #include "hilbert3d.h"
+#include "dr_api.h"
 
 #if defined( USE_OPENCL )
 	#include "../opencl/ocl-backend.h"
@@ -547,6 +548,9 @@ int main(int argc, char **argv)
 
         // Time OpenMP Kernel
         #ifdef USE_OPENMP
+        if (dr_app_setup() == -1) {
+            printf("DRAPP SETUP FAILED\n");
+        }
         if (backend == OPENMP) {
             omp_set_num_threads(rc2[k].omp_threads);
 
@@ -585,7 +589,9 @@ int main(int argc, char **argv)
                             if (rc2[k].ro_morton || rc2[k].ro_hilbert) {
                                 gather_smallbuf_morton(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].delta, rc2[k].generic_len, rc2[k].wrap, rc2[k].ro_order);
                             } else {
+                                dr_app_start();
                                 gather_smallbuf(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].delta, rc2[k].generic_len, rc2[k].wrap);
+                                dr_app_stop();
                             }
                         } else {
                             gather_smallbuf_multidelta(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].deltas_ps, rc2[k].generic_len, rc2[k].wrap, rc2[k].deltas_len);
@@ -602,6 +608,8 @@ int main(int argc, char **argv)
                 if (i!= -1) rc2[k].time_ms[i] = sg_get_time_ms();
 
             }
+
+            dr_app_cleanup();
 
             //report_time2(rc2, nrc);
         }
