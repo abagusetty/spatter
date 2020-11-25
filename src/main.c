@@ -23,6 +23,9 @@
 #ifndef x86_64
     #define x86_64
 #endif
+#ifndef DR_APP_EXPORTS
+    #define DR_APP_EXPORTS
+#endif
 #include "dr_api.h"
 
 #if defined( USE_OPENCL )
