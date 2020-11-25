@@ -553,6 +553,10 @@ int main(int argc, char **argv)
 
         #endif // USE_CUDA
 
+        #ifdef DR_APP_EXPORTS
+        printf("drapp exports defined\n");
+        #endif
+
 
         printf("omp start\n");
         // Time OpenMP Kernel
