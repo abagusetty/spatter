@@ -554,6 +554,8 @@ int main(int argc, char **argv)
         if (backend == OPENMP) {
             omp_set_num_threads(rc2[k].omp_threads);
 
+            dr_app_start();
+
             // Start at -1 to do a cache warm
             for (int i = -1; i < (int)rc2[k].nruns; i++) {
 
@@ -589,9 +591,7 @@ int main(int argc, char **argv)
                             if (rc2[k].ro_morton || rc2[k].ro_hilbert) {
                                 gather_smallbuf_morton(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].delta, rc2[k].generic_len, rc2[k].wrap, rc2[k].ro_order);
                             } else {
-                                dr_app_start();
-                                gather_smallbuf(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].delta, rc2[k].generic_len, rc2[k].wrap);
-                                dr_app_stop();
+                                gather_smallbuf(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].delta, rc2[k].generic_len, rc2[k].wrap); 
                             }
                         } else {
                             gather_smallbuf_multidelta(target.host_ptrs, source.host_ptr, rc2[k].pattern, rc2[k].pattern_len, rc2[k].deltas_ps, rc2[k].generic_len, rc2[k].wrap, rc2[k].deltas_len);
@@ -609,7 +609,7 @@ int main(int argc, char **argv)
 
             }
 
-            dr_app_cleanup();
+            dr_app_stop_and_cleanup();
 
             //report_time2(rc2, nrc);
         }
