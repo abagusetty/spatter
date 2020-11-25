@@ -16,8 +16,13 @@
 #include "hilbert3d.h"
 
 
-#define LINUX
-#define x86_64
+//defines required for dynamorio API
+#ifndef LINUX
+    #define LINUX
+#endif
+#ifndef x86_64
+    #define x86_64
+#endif
 #include "dr_api.h"
 
 #if defined( USE_OPENCL )
