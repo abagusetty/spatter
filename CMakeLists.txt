@@ -289,8 +289,12 @@ set(spatter_build_dir "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
 message("DEBUG: set runtime and library output directories to ${spatter_build_dir}")
 set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${spatter_build_dir}")
 set_target_properties(spatter PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${spatter_build_dir}")
+
 #configure_DynamoRIO_standalone(spatter)
-configure_DynamoRIO_client(spatter)
+#configure_DynamoRIO_client(spatter)
+
+configure_DynamoRIO_static(spatter)
+use_DynamoRIO_static_client(spatter drmemtrace_static)
 
 
 #file(GLOB spatter_src
