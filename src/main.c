@@ -560,6 +560,12 @@ int main(int argc, char **argv)
         printf("drapp exports defined\n");
         #endif
 
+        printf("check if running under dynamo control\n");
+        if (dr_app_running_under_dynamorio()) {
+            printf("check passed\n");
+        } else {
+            printf("check failed\n");
+        }
 
         printf("omp start\n");
         // Time OpenMP Kernel
