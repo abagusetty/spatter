@@ -278,6 +278,10 @@ IF (USE_OPENMP OR USE_CUDA)
     ENDIF ()
 ENDIF ()
 
+#Dynamorio Integrations
+
+add_definitions(-DUNIX)
+add_definitions(-DX86_64)
 
 find_package(DynamoRIO)
 if (NOT DynamoRIO_FOUND)
@@ -287,35 +291,9 @@ endif ()
 # TODO: figure out how to get pwd without using BUILD_DIR
 set(spatter_build_dir "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
 message("DEBUG: set runtime and library output directories to ${spatter_build_dir}")
-set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${spatter_build_dir}")
-set_target_properties(spatter PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${spatter_build_dir}")
+set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${spatter_build_dir}" LIBRARY_OUTPUT_DIRECTORY "${spatter_build_dir}")
 
-#configure_DynamoRIO_standalone(spatter)
-#configure_DynamoRIO_client(spatter)
-
-configure_DynamoRIO_static(spatter)
-use_DynamoRIO_static_client(spatter drmemtrace_static)
-
-
-#file(GLOB spatter_src
-#	"src/*.h"
-#	"src/*.c"
-#	"src/openmp/*"
-#	"include/*"
-#)
-#file(GLOB_RECURSE exter
-#	"external/argtable3/src/*.c"
-#	"external/argtable3/src/*.h"
-#)
-#message("included: ${spatter_src}")
-#add_executable(spatterapp ${spatter_src} ${exter})
-#target_link_libraries(spatterapp m)
-#set_target_properties(spatterapp PROPERTIES RUNTIME_OUTPUT_DIRECTORY /nethome/vhuang31/spatter/external)
-#get_target_property(target_loc spatterapp RUNTIME_OUTPUT_DIRECTORY)
-#message("RUNTIME_OUTPUT_DIRECTORY of spatterapp from spatter CMake file: ${target_loc}")
-#configure_DynamoRIO_standalone(spatterapp)
-
-
+configure_DynamoRIO_standalone(spatter)
 # Note - This file can be reformatted with cmake-format CMakeLists.txt -i
 # --command-case=upper --keyword-case=upper --dangle-parens --tab-size=4
 # --separate-ctrl-name-with-space --separate-fn-name-with-space If you do not
