@@ -279,7 +279,6 @@ IF (USE_OPENMP OR USE_CUDA)
 ENDIF ()
 
 #Dynamorio Integrations
-
 add_definitions(-DUNIX)
 add_definitions(-DX86_64)
 
@@ -288,12 +287,16 @@ if (NOT DynamoRIO_FOUND)
   message(FATAL_ERROR "DynamoRIO package required to build")
 endif ()
 
-# TODO: figure out how to get pwd without using BUILD_DIR
-set(spatter_build_dir "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
-message("DEBUG: set runtime and library output directories to ${spatter_build_dir}")
-set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${spatter_build_dir}" LIBRARY_OUTPUT_DIRECTORY "${spatter_build_dir}")
+set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
+target_link_libraries(spatter LINK_PUBLIC
+	"${DynamoRIO_DIR}/../samples/bin64/libmemtrace_x86_binary.so"
+	"${DynamoRIO_DIR}/../ext/lib64/release/libdrutil.so"
+	"${DynamoRIO_DIR}/../ext/lib64/release/libdrx.so"
+	"${DynamoRIO_DIR}/../ext/lib64/release/libdrreg.so"
+        "${DynamoRIO_DIR}/../ext/lib64/release/libdrmgr.so")
 
 configure_DynamoRIO_standalone(spatter)
+
 # Note - This file can be reformatted with cmake-format CMakeLists.txt -i
 # --command-case=upper --keyword-case=upper --dangle-parens --tab-size=4
 # --separate-ctrl-name-with-space --separate-fn-name-with-space If you do not

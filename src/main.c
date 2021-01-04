@@ -15,17 +15,7 @@
 #include "morton.h"
 #include "hilbert3d.h"
 
-
-//defines required for dynamorio API
-#ifndef LINUX
-    #define LINUX
-#endif
-#ifndef x86_64
-    #define x86_64
-#endif
-// #ifndef DR_APP_EXPORTS
-//     #define DR_APP_EXPORTS
-// #endif
+// DynamoRIO api
 #include "dr_api.h"
 
 #if defined( USE_OPENCL )
@@ -556,34 +546,15 @@ int main(int argc, char **argv)
 
         #endif // USE_CUDA
 
-        #ifdef DR_APP_EXPORTS
-        printf("drapp exports defined\n");
-        #endif
-
-        printf("check if running under dynamo control\n");
-        if (dr_app_running_under_dynamorio()) {
-            printf("check passed\n");
-        } else {
-            printf("check failed\n");
-        }
-
-        printf("omp start\n");
         // Time OpenMP Kernel
         #ifdef USE_OPENMP
-        if (dr_app_setup() == -1) {
-            printf("DRAPP SETUP FAILED\n");
-        }else {
-            printf("drapp setup successful\n");
-        }
-        if (backend == OPENMP) {
+	if (backend == OPENMP) {
             omp_set_num_threads(rc2[k].omp_threads);
 
-            dr_app_start();
-            printf("drapp start successful\n");
+            dr_app_setup_and_start();
 
             // Start at -1 to do a cache warm
             for (int i = -1; i < (int)rc2[k].nruns; i++) {
-                printf("running %d of %d runs\n", i, (int)rc2[k].nruns);
 
                 if (i!=-1) sg_zero_time();
 #ifdef USE_PAPI
@@ -636,9 +607,8 @@ int main(int argc, char **argv)
             }
 
             dr_app_stop_and_cleanup();
-            printf("drapp stop and cleanup successful\n");
-
-            //report_time2(rc2, nrc);
+        
+	    //report_time2(rc2, nrc);
         }
         #endif // USE_OPENMP
 
