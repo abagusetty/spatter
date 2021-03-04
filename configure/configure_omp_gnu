@@ -27,4 +27,5 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D USE_OPENMP=1 \
 	-D USE_CUDA=0 \
 	-D BUILD_DIR=${BUILD_DIR} \
+	-D DynamoRIO_DIR=~/dynamorio/build/cmake \
 	..

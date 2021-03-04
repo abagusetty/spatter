@@ -288,12 +288,6 @@ if (NOT DynamoRIO_FOUND)
 endif ()
 
 set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
-target_link_libraries(spatter LINK_PUBLIC
-	"${DynamoRIO_DIR}/../samples/bin64/libmemtrace_x86_binary.so"
-	"${DynamoRIO_DIR}/../ext/lib64/release/libdrutil.so"
-	"${DynamoRIO_DIR}/../ext/lib64/release/libdrx.so"
-	"${DynamoRIO_DIR}/../ext/lib64/release/libdrreg.so"
-        "${DynamoRIO_DIR}/../ext/lib64/release/libdrmgr.so")
 
 configure_DynamoRIO_standalone(spatter)
 
