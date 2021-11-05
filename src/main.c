@@ -512,6 +512,9 @@ int main(int argc, char **argv)
 
 
     // Print config info
+#ifdef USE_DYNAMORIO
+    dr_app_setup_and_start();
+#endif
 
     for (int k = 0; k < nrc; k++) {
         // Time OpenCL Kernel
@@ -550,8 +553,6 @@ int main(int argc, char **argv)
         #ifdef USE_OPENMP
 	if (backend == OPENMP) {
             omp_set_num_threads(rc2[k].omp_threads);
-
-            dr_app_setup_and_start();
 
             // Start at -1 to do a cache warm
             for (int i = -1; i < (int)rc2[k].nruns; i++) {
@@ -605,9 +606,6 @@ int main(int argc, char **argv)
                 if (i!= -1) rc2[k].time_ms[i] = sg_get_time_ms();
 
             }
-
-            dr_app_stop_and_cleanup();
-        
 	    //report_time2(rc2, nrc);
         }
         #endif // USE_OPENMP
@@ -646,6 +644,10 @@ int main(int argc, char **argv)
         }
         #endif // USE_SERIAL
     }
+
+#ifdef USE_DYNAMORIO
+    dr_app_stop_and_cleanup();
+#endif
 
     report_time2(rc2, nrc);
 
