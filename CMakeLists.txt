@@ -279,17 +279,20 @@ IF (USE_OPENMP OR USE_CUDA)
 ENDIF ()
 
 #Dynamorio Integrations
-add_definitions(-DUNIX)
-add_definitions(-DX86_64)
+IF (USE_DYNAMORIO)
+    ADD_DEFINITIONS (-DUSE_DYNAMORIO)
+    add_definitions(-DUNIX)
+    add_definitions(-DX86_64)
 
-find_package(DynamoRIO)
-if (NOT DynamoRIO_FOUND)
-  message(FATAL_ERROR "DynamoRIO package required to build")
-endif ()
+    find_package(DynamoRIO)
+    if (NOT DynamoRIO_FOUND)
+    message(FATAL_ERROR "DynamoRIO package required to build")
+    endif ()
 
-set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
+    set_target_properties(spatter PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${BUILD_DIR}")
 
-configure_DynamoRIO_standalone(spatter)
+    configure_DynamoRIO_standalone(spatter)
+ENDIF ()
 
 # Note - This file can be reformatted with cmake-format CMakeLists.txt -i
 # --command-case=upper --keyword-case=upper --dangle-parens --tab-size=4
