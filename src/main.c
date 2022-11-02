@@ -65,7 +65,9 @@ int papi_event_codes[PAPI_MAX_COUNTERS];
 long long papi_event_values[PAPI_MAX_COUNTERS];
 extern const char* const papi_ctr_str[];
 #endif
-
+void ariel_output_stats() {
+    printf("ARIEL: Request to print statistics.\n");
+}
 void print_papi_names() {
 #ifdef USE_PAPI
     printf("\nPAPI Counters: %d\n", papi_nevents);
@@ -106,11 +108,13 @@ void print_system_info(){
 
     printf("\n");
 }
+void ariel_enable() {
+	printf("ARIEL-CLIENT: Library enabled.\n");
+}
 
 void print_header(){
     //printf("kernel op time source_size target_size idx_len bytes_moved actual_bandwidth omp_threads vector_len block_dim shmem\n");
     printf("%-7s %-12s %-12s", "config", "time(s)","bw(MB/s)");
-
 #ifdef USE_PAPI
     for (int i = 0; i < papi_nevents; i++) {
         printf(" %-12s", papi_ctr_str[i]);
@@ -486,7 +490,6 @@ int main(int argc, char **argv)
     // =======================================
     // Execute Benchmark
     // =======================================
-
     // Print some header info
     /*
     if (print_header_flag)
@@ -552,7 +555,13 @@ int main(int argc, char **argv)
 
             // Start at -1 to do a cache warm
             for (int i = -1; i < (int)rc2[k].nruns; i++) {
-
+                ariel_output_stats();
+                if (i == 1) {
+                    exit(0);
+                }
+                if (i > -1) {     
+                    ariel_enable();
+                }
                 if (i!=-1) sg_zero_time();
 #ifdef USE_PAPI
                 if (i!=-1) profile_start(EventSet, __LINE__, __FILE__);
@@ -600,10 +609,14 @@ int main(int argc, char **argv)
                 if (i!= -1) profile_stop(EventSet, rc2[k].papi_ctr[i], __LINE__, __FILE__);
 #endif
                 if (i!= -1) rc2[k].time_ms[i] = sg_get_time_ms();
+                if (i == 0) {
+                    report_time2(rc2, nrc);
+                }    
 
             }
 
             //report_time2(rc2, nrc);
+        
         }
         #endif // USE_OPENMP
 
@@ -657,7 +670,6 @@ int main(int argc, char **argv)
         }
     }
     //printf("\ngood: %d, bad: %d\n", good, bad);
-
 
     // =======================================
     // Validation
