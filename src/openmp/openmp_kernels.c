@@ -34,6 +34,8 @@ void gather_smallbuf(
         for (size_t i = 0; i < n; i++) {
            sgData_t *sl = source + delta * i;
            sgData_t *tl = target[t] + pat_len*(i%target_len);
+           //print tracing
+           printf("hi");
 #ifdef __CRAYC__
     #pragma concurrent
 #endif

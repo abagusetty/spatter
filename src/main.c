@@ -550,23 +550,27 @@ int main(int argc, char **argv)
 
         // Time OpenMP Kernel
         #ifdef USE_OPENMP
+        
         if (backend == OPENMP) {
             omp_set_num_threads(rc2[k].omp_threads);
 
             // Start at -1 to do a cache warm
-            for (int i = -1; i < (int)rc2[k].nruns; i++) {
-                ariel_output_stats();
-                if (i == 1) {
-                    exit(0);
-                }
-                if (i > -1) {     
-                    ariel_enable();
-                }
+            //for (int i = -1; i < (int)rc2[k].nruns; i++) {
+            //Ariel profiling is not working, the solution is to chop the code up into a profiling state manually
+            for (int i = 0; i < 1; i++) {    
+                // ---------------------
+                // failed profiling techniques
+                // if (i == 1) {
+                //     exit(0);
+                // }
+                // if (i == 0) {     
+                //     ariel_enable();
+                // }
+                //-------------------------------
                 if (i!=-1) sg_zero_time();
 #ifdef USE_PAPI
                 if (i!=-1) profile_start(EventSet, __LINE__, __FILE__);
 #endif
-
                 switch (rc2[k].kernel) {
                     case SG:
                         if (rc2[k].op == OP_COPY) {
@@ -582,6 +586,7 @@ int main(int argc, char **argv)
                         else if (rc2[k].op == OP_COPY) {
                             scatter_smallbuf(source.host_ptr, target.host_ptrs, rc2[k].pattern, rc2[k].pattern_len, rc2[k].delta, rc2[k].generic_len, rc2[k].wrap);
                             // scatter_omp (target.host_ptr, ti.host_ptr, source.host_ptr, si.host_ptr, index_len);
+                            //print tracing
                         } else {
                             // scatter_accum_omp (target.host_ptr, ti.host_ptr, source.host_ptr, si.host_ptr, index_len);
                         }
@@ -611,6 +616,7 @@ int main(int argc, char **argv)
                 if (i!= -1) rc2[k].time_ms[i] = sg_get_time_ms();
                 if (i == 0) {
                     report_time2(rc2, nrc);
+                    exit(0);
                 }    
 
             }
